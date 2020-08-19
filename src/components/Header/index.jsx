@@ -12,9 +12,9 @@ import Avatar from '@material-ui/core/Avatar';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
+import InputBox from 'components/InputBox';
 import { ThemeContext } from 'context/themeContext';
 import useStyles from './style';
-import InputBox from 'components/InputBox';
 
 const Header = ({ handleChange }) => {
   const classes = useStyles();

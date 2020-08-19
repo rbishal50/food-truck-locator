@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import HomeReducer from 'containers/LoginPage/reducer.js';
+import HomeReducer from 'containers/Home/reducer.js';
 
 export default combineReducers({
   HomeReducer,

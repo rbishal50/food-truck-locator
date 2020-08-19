@@ -1,13 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
 
+import { getAllData } from './actions';
 import Header from 'components/Header';
+import EmptyState from 'components/EmptyState';
+import Wrapper from 'components/Wrapper';
+import useStyles from './style';
 
 const ZOOM = 18;
-const endPoint = 'https://data.sfgov.org/resource/rqzj-sfat.json';
+const INITIAL_CENTER = {
+  lat: 37.7579841905286,
+  lng: -122.433465780407,
+};
 
-const Home = ({ google }) => {
+const Home = ({ google, fetchAllData, mapData }) => {
+  const classes = useStyles();
   const [data, setData] = React.useState([]);
   const [filteredData, setFilteredData] = React.useState([]);
   const [active, setActive] = React.useState({
@@ -21,10 +31,7 @@ const Home = ({ google }) => {
     item: '',
     place: '',
   });
-  const [center, setCenter] = React.useState({
-    lat: 37.7579841905286,
-    lng: -122.433465780407,
-  });
+  const [center, setCenter] = React.useState(INITIAL_CENTER);
 
   const mapStyles = {
     width: '100%',
@@ -35,12 +42,12 @@ const Home = ({ google }) => {
     a.toLowerCase().includes(b.toLowerCase());
 
   React.useEffect(() => {
-    fetch(endPoint)
-      .then((res) => res.json())
-      .then((dta) => {
-        setData(dta);
-      });
-  }, []);
+    fetchAllData();
+  }, [fetchAllData]);
+
+  React.useEffect(() => {
+    setData(mapData.data);
+  }, [mapData.data]);
 
   React.useEffect(() => {
     const { place, item } = searchText;
@@ -98,28 +105,46 @@ const Home = ({ google }) => {
           })
         }
       />
-      <div style={{ marginTop: '64px' }} />
-      <Map google={google} zoom={ZOOM} style={mapStyles} center={center}>
-        {displayMarkers()}
-        <InfoWindow
-          marker={active.activeMarker}
-          visible={active.showingInfoWindow}
-        >
-          <div>
-            <h1>{active.selectedPlace}</h1>
-            <p>{active.selectedAddress}</p>
-            <p>{active.selectedFood}</p>
-          </div>
-        </InfoWindow>
-      </Map>
+      <Wrapper>
+        <div style={{ marginTop: '64px' }} />
+        {!!filteredData.length && (
+          <Map google={google} zoom={ZOOM} style={mapStyles} center={center}>
+            {displayMarkers()}
+            <InfoWindow
+              marker={active.activeMarker}
+              visible={active.showingInfoWindow}
+              style={{ padding: 0, background: 'red' }}
+            >
+              <div className={classes.text}>
+                <h1>{active.selectedPlace}</h1>
+                <p>{active.selectedAddress}</p>
+                <p>{active.selectedFood}</p>
+              </div>
+            </InfoWindow>
+          </Map>
+        )}
+        {!filteredData.length && !mapData.getAllDataLoading && <EmptyState />}
+      </Wrapper>
     </>
   );
 };
 
 Home.propTypes = {
   google: PropTypes.object.isRequired,
+  mapData: PropTypes.object.isRequired,
+  fetchAllData: PropTypes.func.isRequired,
 };
 
-export default GoogleApiWrapper({
-  apiKey: 'AIzaSyAgHkVdmrk8vZ0SmKdKANLb_mMvpqtL7fg',
-})(Home);
+const mapStateToProps = (state) => ({ mapData: state.HomeReducer });
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchAllData: () => dispatch(getAllData()),
+});
+
+const withConnect = connect(mapStateToProps, mapDispatchToProps);
+
+export default compose(withConnect)(
+  GoogleApiWrapper({
+    apiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
+  })(Home)
+);
