@@ -20,9 +20,6 @@ const getTheme = (darkMode) => {
       secondary: deepPurple,
       type: darkMode ? 'dark' : 'light',
     },
-    typography: {
-      fontFamily: "'Proxima Nova', 'Roboto', 'Helvetica', 'Arial', sans-serif",
-    },
   });
 };
 
