@@ -10,7 +10,7 @@ A food truck locator app, that shows a google map showing locations of food truc
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-Libraries used are react-router-dom, redux, redux-saga, react-redux, google-maps-react.
+Libraries used are react-router-dom, redux, redux-saga, react-redux, google-maps-react, material UI Core
 
 Environment variables needed are: REACT_APP_API_BASE_URL (https://data.sfgov.org/resource) and REACT_APP_GOOGLE_MAP_API_KEY (your google map's api key)
 
