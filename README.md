@@ -2,6 +2,12 @@
 
 https://food-truck-locator-404.herokuapp.com/
 
+## Brief Intro
+
+A food truck locator app, that shows a google map showing locations of foof trucks available. The user can search what they want to eat and where they want to eat. It's a client-side search, the map updates instantly.
+
+## Technical Specs
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
